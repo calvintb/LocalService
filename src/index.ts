@@ -1,7 +1,15 @@
+import {config} from 'dotenv';
+config({path: '.env'}); 
+
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 
 const client = new PrismaClient();
+
+import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from 'uuid';
+
+
 const app = express();
 app.use(express.json());
 
