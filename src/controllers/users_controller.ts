@@ -25,6 +25,47 @@ const getMe = (client: PrismaClient): RequestHandler =>
     }
 
 
+
+type LoginBody = {
+    email: string,
+    password: string
+    }
+
+
+const login = (client: PrismaClient): RequestHandler =>  
+    async (req, res) => {
+        const {email, password} = req.body as LoginBody;
+        const user = await client.user.findFirst({
+            where: {
+            email,
+            }
+        });
+        if (!user) {
+            res.status(404).json({ message: "Invalid email or password" });
+            return;
+        }
+        
+        const isValid = await bcrypt.compare(password, user.passwordHash);
+        if (!isValid) {
+            res.status(404).json({ message: "Invalid email or password" });
+            return;
+        }
+        
+        const token = jwt.sign({
+            userId: user.id
+        }, process.env.ENCRYPTION_KEY!!, {
+            expiresIn: '10m'
+        });
+        res.json({
+            user,
+            token
+        })
+    };
+
+
+
+
+
 type CreateUserBody = {
     firstName: string,
     lastName: string,
@@ -70,6 +111,7 @@ export const usersController = controller(
     [
         { path: "/me", endpointBuilder: getMe, method: "get"},
         { path: "/", method: "post", endpointBuilder: createUser, skipAuth: true},
-        { path: "/listUsers", method: "get", endpointBuilder: getUsers}     //On the path http://localhost:3000/users/listUsers
+        { path: "/listUsers", method: "get", endpointBuilder: getUsers},     //On the path http://localhost:3000/users/listUsers
+        { path: "/login", method: "post", endpointBuilder: login}
     ]
 )

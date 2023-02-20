@@ -6,6 +6,7 @@ import dotenv, {config} from "dotenv";
 import jwt from "jsonwebtoken";
 import { JWTBody, RequestWithJWTBody } from "./dto/jwt";
 import { usersController } from "./controllers/users_controller";
+import { reptilesController } from "./controllers/reptiles_controller";
 
 config({path: '.env'})
 dotenv.config();
@@ -15,45 +16,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-//sign up
-
-type LoginBody = {
-  email: string,
-  password: string
-}
-
-// log in
-app.post("/sessions",  async (req, res) => {
-  const {email, password} = req.body as LoginBody;
-  const user = await client.user.findFirst({
-    where: {
-      email,
-    }
-  });
-  if (!user) {
-    res.status(404).json({ message: "Invalid email or password" });
-    return;
-  }
-
-  const isValid = await bcrypt.compare(password, user.passwordHash);
-  if (!isValid) {
-    res.status(404).json({ message: "Invalid email or password" });
-    return;
-  }
-
-  const token = jwt.sign({
-    userId: user.id
-  }, process.env.ENCRYPTION_KEY!!, {
-    expiresIn: '10m'
-  });
-  res.json({
-    user,
-    token
-  })
-});
 
 //All paths involving user will eventually be here in usersController
 usersController(app, client);
+
+reptilesController(app, client);
 
 
 app.listen(parseInt(process.env.PORT || "3000", 10), () => {
