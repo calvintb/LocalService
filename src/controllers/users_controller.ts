@@ -13,7 +13,6 @@ const getMe = (client: PrismaClient): RequestHandler =>
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-
         const user = await client.user.findFirst({
             where: {
                 id: userId

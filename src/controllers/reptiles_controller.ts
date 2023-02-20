@@ -92,13 +92,23 @@ const updateReptile = (client: PrismaClient): RequestHandler =>
 }
 
 
-const createFeeding = (client: PrismaClient): RequestHandler =>
+const createFeeding = (client: PrismaClient): RequestHandler =>   //We need to pass in the reptile that we are doing the feeding for
     async (req, res) => {
         const {reptileId, foodItem} = req.body as CreateFeedingBody;
+        const reptile = await client.reptile.findFirst({
+            // where: {
+            //     reptileId
+            // }
+            where: {
+                id: reptileId
+            }
+        })
+        console.log(reptile)
+
         const feeding = await client.feeding.create({
             data: {
                 reptileId,
-                foodItem
+                foodItem,
             },
         });
 
@@ -220,100 +230,3 @@ export const reptilesController = controller(
         { path: "/listSchedules", endpointBuilder: listSchedules, method: "get"},
     ]
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// //TO-DO: Fill out with Reptile stuff
-
-// // const getMe = (client: PrismaClient): RequestHandler =>
-// //     async (req: RequestWithJWTBody, res) => {
-// //         const userId = req.jwtBody?.userId;
-// //         if (!userId) {
-// //             res.status(401).json({ message: "Unauthorized" });
-// //             return;
-// //         }
-
-// //         const user = await client.user.findFirst({
-// //             where: {
-// //                 id: userId
-// //             }
-// //         });
-
-// //         res.json({ user });
-
-// //     }
-
-
-
-
-// type CreateReptileBody = {
-//     species: string,
-//     name: string,
-//     sex: string,
-//     userId: number
-//     // user: User
-// }
-
-
-
-
-// const createReptile = (client: PrismaClient): RequestHandler =>
-//     async (req, res) => {
-//         const {species, name, sex, userId} = req.body as CreateReptileBody;
-//         console.log(req.body)
-//         const reptile = await client.reptile.create({
-//             data: {
-//                 species,
-//                 name,
-//                 sex,
-//                 userId,
-//                 //I think I also need 'user' object here
-//             },
-//         });
-
-//         const token = jwt.sign({
-//             reptileId: reptile.id
-//         }, process.env.ENCRYPTION_KEY!!, {
-//             expiresIn: '1m'  
-//         });
-
-//         res.json({ reptile, token })  //, token 
-//     }
-
-
-
-
-
-// export const reptilesController = controller(
-//     "reptiles",
-//     [
-//         { path: "/createReptile", method: "post", endpointBuilder: createReptile, skipAuth: true},
-//     ]
-// )
