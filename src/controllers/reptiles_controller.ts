@@ -70,10 +70,18 @@ const createReptile = (client: PrismaClient): RequestHandler =>
     }
 
 
+type getReptileBody = {
+    userId: number
+}
+
 const listReptiles = (client: PrismaClient): RequestHandler =>  //Should just return all the reptiles of a particular user
     async (req, res) => {
-        const reptiles = await client.reptile.findMany();
-        console.log(reptiles)
+        const {userId} = req.body as getReptileBody;
+        const reptiles = await client.reptile.findMany({
+            where: {
+                userId
+            }
+        });
         res.json({ reptiles });
 }
 
@@ -218,8 +226,13 @@ const listSchedules = (client: PrismaClient): RequestHandler =>
 export const reptilesController = controller(
     "reptiles",
     [
-        { path: "/createReptile", endpointBuilder: createReptile, method: "post"},
-        { path: "/listReptiles", endpointBuilder: listReptiles, method: "get"},
+        { path: "/reptile", endpointBuilder: createReptile, method: "post"},
+        { path: "/", endpointBuilder: listReptiles, method: "get"},
+
+        //Get reptiles needs to ONLY show the reptiles that belong to that user.
+
+        //We also need to add delete a reptile to postman
+
         { path: "/deleteReptile", endpointBuilder: deleteReptile, method: "delete"},
         { path: "/updateReptile", endpointBuilder: updateReptile, method: "put"},
         { path: "/createFeeding", endpointBuilder: createFeeding, method: "post"},
@@ -230,3 +243,18 @@ export const reptilesController = controller(
         { path: "/listSchedules", endpointBuilder: listSchedules, method: "get"},
     ]
 )
+
+                                                                                                                                //STATUS::::
+// I should be able to create a user account                        POST {{url}}/users                                      : Good. Send a JSON body with firstName, lastName, email, password
+// I should be able to sign into a user account                     POST {{url}}/users                                      : 
+// I should be able to create a reptile                             POST {{url}}/reptile                                    : Good. BUT, Do we need to be assigning the reptile to a specific user?
+// I should be able to delete a reptile                       ~~~~ADD~~~~~                                                  :
+// I should be able to update a reptile                             PUT {{url}}/reptile/:id                                 :
+// I should be able to list all of my reptiles                      GET {{url}}/reptiles                                    : Right now we are returning ALL reptiles--> how can we return only the reptiles that belong to the user?
+// I should be able to create a feeding for a reptile               POST {{url}}/feedings/reptile/:id                       :
+// I should be able to list all of the feedings for a reptile       GET {{url}}/feedings/reptile/:id                        ;
+// I should be able to create a husbandry record for a reptile      POST {{url}}/husbandry-records/reptile/:id              :
+// I should be able to list all of the husbandry records for reptile  GET {{url}}/husbandry-records/reptile/:id             :
+// I should be able to create a schedule for a reptile              POST {{url}}/schedule/user/:id_user/reptile/:id_rept    :
+// I should be able to list all of the schedules for a reptile      GET {{url}}/schedule/reptile/:id                        :
+// I should be able to list all of the schedules for a user         GET {{url}}/schedule/                                   :
