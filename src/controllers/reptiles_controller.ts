@@ -7,20 +7,12 @@ import { controller } from "../lib/controller";
 import { usersController } from "./users_controller";
 
 
-
-
-
-
-
-
-
-
 //TO-DO everything in bodies is type string rn but some need to be int, float in the database
 type CreateReptileBody = {
     id: number,
     userId: number,
     species: string,
-    name: string, //either 'm' or 'f'
+    name: string,
     sex: string,
 }
 
@@ -54,9 +46,22 @@ type CreateScheduleBody = {
     sunday: boolean,
 }
 
+type DeleteReptileBody = {
+    id: number
+}
+
+
+
+
+
 const createReptile = (client: PrismaClient): RequestHandler =>
-    async (req, res) => {
-        const {userId, species, name, sex} = req.body as CreateReptileBody;
+    async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const {species, name, sex} = req.body as CreateReptileBody;
         const reptile = await client.reptile.create({
             data: {
                 userId,
@@ -65,48 +70,86 @@ const createReptile = (client: PrismaClient): RequestHandler =>
                 sex,
             },
         });
-
         res.json({ reptile });
     }
 
 
-type getReptileBody = {
-    userId: number
-}
-
-const listReptiles = (client: PrismaClient): RequestHandler =>  //Should just return all the reptiles of a particular user
-    async (req, res) => {
-        const {userId} = req.body as getReptileBody;
+const listReptiles = (client: PrismaClient): RequestHandler =>
+    async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const reptiles = await client.reptile.findMany({
             where: {
                 userId
             }
         });
         res.json({ reptiles });
-}
+    }
 
 
-const deleteReptile = (client: PrismaClient): RequestHandler =>
-    async (req, res) => {
+
+const deleteReptile = (client:PrismaClient): RequestHandler =>
+    async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        //TO DO-->> WE need to check if the reptile belongs to the user --> ANDE WE NEED TO IMPLEMENT THIS ON ALL METHODS
 
 
-}
+        // const {id} = req.body as DeleteReptileBody;
+        const id = parseInt(req.params.id)
+        console.log(id)
+        await client.reptile.delete({
+            where:{
+                id
+            }
+        })
+        res.json({message: "deleted"});
+    }
+
+
+
+
+
+
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*EVERYTHING BELOW HERE NEEDS TO BE WORKED ON-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+
+
+
+
+
+
 
 
 const updateReptile = (client: PrismaClient): RequestHandler =>
-    async (req, res) => {
+    async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        //Finish implementation
+
+    }
 
 
-}
-
-
-const createFeeding = (client: PrismaClient): RequestHandler =>   //We need to pass in the reptile that we are doing the feeding for
-    async (req, res) => {
+const createFeeding = (client: PrismaClient): RequestHandler => //CURRENTLY NOT WORKING******************
+    async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const {reptileId, foodItem} = req.body as CreateFeedingBody;
         const reptile = await client.reptile.findFirst({
-            // where: {
-            //     reptileId
-            // }
             where: {
                 id: reptileId
             }
@@ -121,11 +164,17 @@ const createFeeding = (client: PrismaClient): RequestHandler =>   //We need to p
         });
 
         res.json({ feeding });
-}
+    }
 
 
-const listFeedings = (client: PrismaClient): RequestHandler =>
+const listFeedings = (client: PrismaClient): RequestHandler =>  //NEEDS SOME ATTENTION**************
     async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
         const reptile = await client.reptile.findFirst({
             where: {
                 id: req.jwtBody?.reptileId
@@ -144,11 +193,16 @@ const listFeedings = (client: PrismaClient): RequestHandler =>
         });
 
         res.json({ feeding });
-}
+    }
 
 
-const createHusbandry = (client: PrismaClient): RequestHandler =>
-    async (req, res) => {
+const createHusbandry = (client: PrismaClient): RequestHandler =>  //CURRENTLY NOT WORKING**************
+    async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const {reptileId, length, weight, temperature, humidity} = req.body as CreateHusbandryBody;
         const husbandry = await client.husbandryRecord.create({
             data: {
@@ -161,30 +215,35 @@ const createHusbandry = (client: PrismaClient): RequestHandler =>
         });
 
         res.json({ husbandry });
-}
+    }
 
 
-const listHusbandries = (client: PrismaClient): RequestHandler =>
+const listHusbandries = (client: PrismaClient): RequestHandler =>  //CURRENTLY NOT WORKING**************
     async (req: RequestWithJWTBody, res) => {
-        const reptileId = req.jwtBody?.reptileId; //req.jwtBody?.userId;
-        if (!reptileId) {
-            res.status(401).json({ message: "Reptile doesn't exist" });
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
             return;
         }
 
-        const husbandry = await client.husbandryRecord.findMany({
-            where: {
-                reptileId: reptileId
-            }
-        });
+        // const husbandry = await client.husbandryRecord.findMany({
+        //     where: {
+        //         reptileId: reptileId
+        //     }
+        // });
 
-        res.json({ husbandry });
-}
+        // res.json({ husbandry });
+    }
 
 
-const createSchedule = (client: PrismaClient): RequestHandler =>
-    async (req, res) => {
-        const {reptileId, userId, type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as CreateScheduleBody;
+const createSchedule = (client: PrismaClient): RequestHandler =>        //CURRENTLY NOT WORKING**************
+    async (req: RequestWithJWTBody, res) => {
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const {reptileId, type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as CreateScheduleBody;
         const schedule = await client.schedule.create({
             data: {
                 reptileId,
@@ -202,38 +261,34 @@ const createSchedule = (client: PrismaClient): RequestHandler =>
         });
 
         res.json({ schedule })
-}
+    }
 
 
-const listSchedules = (client: PrismaClient): RequestHandler =>
+const listSchedules = (client: PrismaClient): RequestHandler =>         //CURRENTLY NOT WORKING**************
     async (req: RequestWithJWTBody, res) => {
-        const reptileId = req.jwtBody?.reptileId; //req.jwtBody?.userId;
-        if (!reptileId) {
-            res.status(401).json({ message: "Reptile doesn't exist" });
+        const userId = req.jwtBody?.userId;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
             return;
         }
 
-        const schedules = await client.schedule.findMany({
-            where: {
-                reptileId: reptileId
-            }
-        });
+        // const schedules = await client.schedule.findMany({
+        //     where: {
+        //         reptileId: reptileId
+        //     }
+        // });
 
-        res.json({ schedules });
-}
+        // res.json({ schedules });
+    }
 
 
 export const reptilesController = controller(
     "reptiles",
     [
-        { path: "/reptile", endpointBuilder: createReptile, method: "post"},
+        { path: "/", endpointBuilder: createReptile, method: "post"},
         { path: "/", endpointBuilder: listReptiles, method: "get"},
-
-        //Get reptiles needs to ONLY show the reptiles that belong to that user.
-
-        //We also need to add delete a reptile to postman
-
-        { path: "/deleteReptile", endpointBuilder: deleteReptile, method: "delete"},
+        { path: "/:id", endpointBuilder: deleteReptile, method: "delete"},
+    
         { path: "/updateReptile", endpointBuilder: updateReptile, method: "put"},
         { path: "/createFeeding", endpointBuilder: createFeeding, method: "post"},
         { path: "/listFeedings", endpointBuilder: listFeedings, method: "get"},
@@ -244,17 +299,17 @@ export const reptilesController = controller(
     ]
 )
 
-                                                                                                                                //STATUS::::
-// I should be able to create a user account                        POST {{url}}/users                                      : Good. Send a JSON body with firstName, lastName, email, password
-// I should be able to sign into a user account                     POST {{url}}/users                                      : 
-// I should be able to create a reptile                             POST {{url}}/reptile                                    : Good. BUT, Do we need to be assigning the reptile to a specific user?
-// I should be able to delete a reptile                       ~~~~ADD~~~~~                                                  :
-// I should be able to update a reptile                             PUT {{url}}/reptile/:id                                 :
-// I should be able to list all of my reptiles                      GET {{url}}/reptiles                                    : Right now we are returning ALL reptiles--> how can we return only the reptiles that belong to the user?
-// I should be able to create a feeding for a reptile               POST {{url}}/feedings/reptile/:id                       :
-// I should be able to list all of the feedings for a reptile       GET {{url}}/feedings/reptile/:id                        ;
-// I should be able to create a husbandry record for a reptile      POST {{url}}/husbandry-records/reptile/:id              :
-// I should be able to list all of the husbandry records for reptile  GET {{url}}/husbandry-records/reptile/:id             :
-// I should be able to create a schedule for a reptile              POST {{url}}/schedule/user/:id_user/reptile/:id_rept    :
-// I should be able to list all of the schedules for a reptile      GET {{url}}/schedule/reptile/:id                        :
-// I should be able to list all of the schedules for a user         GET {{url}}/schedule/                                   :
+                                                                        //STATUS::::
+// I should be able to create a user account                           : Good. 
+// I should be able to sign into a user account                        : 
+// I should be able to create a reptile                                : Good.
+// I should be able to delete a reptile                                : Good.
+// I should be able to update a reptile                                :
+// I should be able to list all of my reptiles                         : Right now we are returning ALL reptiles--> how can we return only the reptiles that belong to the user?
+// I should be able to create a feeding for a reptile                  :
+// I should be able to list all of the feedings for a reptile          ;
+// I should be able to create a husbandry record for a reptile         :
+// I should be able to list all of the husbandry records for reptile   :
+// I should be able to create a schedule for a reptile                 :
+// I should be able to list all of the schedules for a reptile         :
+// I should be able to list all of the schedules for a user            :

@@ -6,6 +6,20 @@ import jwt from "jsonwebtoken";
 import { controller } from "../lib/controller";
 
 
+type LoginBody = {
+    email: string,
+    password: string
+    }
+
+type CreateUserBody = {
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+}
+
+
+
 const getMe = (client: PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
@@ -21,13 +35,6 @@ const getMe = (client: PrismaClient): RequestHandler =>
 
         res.json({ user });
 
-    }
-
-
-
-type LoginBody = {
-    email: string,
-    password: string
     }
 
 
@@ -53,7 +60,7 @@ const login = (client: PrismaClient): RequestHandler =>
         const token = jwt.sign({
             userId: user.id
         }, process.env.ENCRYPTION_KEY!!, {
-            expiresIn: '10m'
+            expiresIn: '30m'
         });
         res.json({
             user,
@@ -62,20 +69,9 @@ const login = (client: PrismaClient): RequestHandler =>
     };
 
 
-
-
-
-type CreateUserBody = {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-}
-
 const createUser = (client: PrismaClient): RequestHandler =>
     async (req, res) => {
         const {firstName, lastName, email, password} = req.body as CreateUserBody;
-        console.log(password, req.body)
         const passwordHash = await bcrypt.hash(password, 10);
         const user = await client.user.create({
             data: {
@@ -89,7 +85,7 @@ const createUser = (client: PrismaClient): RequestHandler =>
         const token = jwt.sign({
             userId: user.id
         }, process.env.ENCRYPTION_KEY!!, {
-            expiresIn: '1m'  
+            expiresIn: '30m'  
         });
 
         res.json({ user, token })
@@ -97,20 +93,11 @@ const createUser = (client: PrismaClient): RequestHandler =>
 
 
 
-const getUsers = (client: PrismaClient): RequestHandler =>
-    async (req, res) => {
-        const users = await client.user.findMany();
-        console.log(users)
-        res.json({ users });
-    }
-
-
 export const usersController = controller(
     "users",
     [
         { path: "/me", endpointBuilder: getMe, method: "get"},
         { path: "/", method: "post", endpointBuilder: createUser, skipAuth: true},
-        { path: "/listUsers", method: "get", endpointBuilder: getUsers},     //On the path http://localhost:3000/users/listUsers
         { path: "/login", method: "post", endpointBuilder: login}
     ]
 )
