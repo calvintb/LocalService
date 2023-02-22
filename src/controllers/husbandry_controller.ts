@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Express, RequestHandler } from "express";
+import { RequestHandler } from "express";
 import { RequestWithJWTBody } from "../dto/jwt";
 import { controller } from "../lib/controller";
 
@@ -14,7 +14,7 @@ type CreateHusbandryBody = {
 }
 
 
-const createHusbandry = (client: PrismaClient): RequestHandler =>  //CURRENTLY NOT WORKING**************
+const createHusbandry = (client: PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
         if (!userId) {
@@ -36,7 +36,7 @@ const createHusbandry = (client: PrismaClient): RequestHandler =>  //CURRENTLY N
     }
 
 
-const listHusbandries = (client: PrismaClient): RequestHandler =>  //CURRENTLY NOT WORKING**************
+const listHusbandries = (client: PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
         if (!userId) {
