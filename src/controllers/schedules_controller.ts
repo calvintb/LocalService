@@ -27,7 +27,8 @@ const createSchedule = (client: PrismaClient): RequestHandler =>        //CURREN
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        const {reptileId, type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as CreateScheduleBody;
+        const reptileId = parseInt(req.params.id);
+        const { type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as CreateScheduleBody;
         const schedule = await client.schedule.create({
             data: {
                 reptileId,
@@ -55,15 +56,14 @@ const listSchedulesForUser = (client: PrismaClient): RequestHandler =>         /
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-
-        // const schedules = await client.schedule.findMany({
-        //     where: {
-        //         reptileId: reptileId
-        //     }
-        // });
-
-        // res.json({ schedules });
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId
+            }
+        })
+        res.json({schedules});
     }
+
 
 const listSchedulesForReptile = (client: PrismaClient): RequestHandler =>         //CURRENTLY NOT WORKING**************
 async (req: RequestWithJWTBody, res) => {
@@ -72,8 +72,23 @@ async (req: RequestWithJWTBody, res) => {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
-
-
+    const reptileId = parseInt(req.params.id);
+    const reptile = await client.reptile.findFirst({
+        where: {
+            userId
+        }
+    })
+    if (reptile && reptile.userId && userId == reptile.userId){
+        const schedules = await client.schedule.findMany({
+            where: {
+                reptileId
+            }
+        })
+        res.json({schedules});
+    } else {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
 
 }
 
