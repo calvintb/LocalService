@@ -1,0 +1,412 @@
+{
+	"info": {
+		"_postman_id": "2038422d-1e6e-480e-975b-9b22ba2441b4",
+		"name": "Reptile Husbandry",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25834129"
+	},
+	"item": [
+		{
+			"name": "Reptiles",
+			"item": [
+				{
+					"name": "Get All Reptiles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/reptiles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reptiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reptile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"sex\":\"f\"\n}    ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/reptiles/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reptiles",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Reptile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"species\":\"redtail_boa\",\n    \"name\":\"Rocky Balboa\",\n    \"sex\":\"m\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/reptiles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reptiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a reptile",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/reptiles/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reptiles",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Feeding",
+			"item": [
+				{
+					"name": "Create Feeding for a reptile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"foodItem\":\"carrots\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/feedings/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedings",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Feedings for a reptile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/feedings/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedings",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "HusbandryRecord",
+			"item": [
+				{
+					"name": "Create A Husbandry Record",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"length\":\"5\",\n    \"weight\":\"200\",\n    \"temperature\":\"68\",\n    \"humidity\":\"80\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/husbandry-records/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"husbandry-records",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All Husbandry Records",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/husbandry-records/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"husbandry-records",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schedule",
+			"item": [
+				{
+					"name": "Create Schedule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\":\"feed\",\n    \"description\":\"i need to feed him carrots again\",\n    \"monday\":false,\n    \"tuesday\":true,\n    \"wednesday\":false,\n    \"thursday\":true,\n    \"friday\":false,\n    \"saturday\":false,\n    \"sunday\":false\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/schedules/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedules",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User Schedules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/schedules",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Reptile Schedules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/schedules/:rept_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedules",
+								":rept_id"
+							],
+							"variable": [
+								{
+									"key": "rept_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"firstName\":\"Joseph\",\n\"lastName\":\"Ditton\",\n\"email\":\"Joseph@Ditton.com\",\n\"password\":\"supersecret\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign in User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"Joseph@Ditton.com\",\n    \"password\":\"supersecret\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY3NzA4ODA4NSwiZXhwIjoxNjc3MDg5ODg1fQ.dAaPKfyR_0L3BP7th4HkqWqe5qOw3Qca3e6L8hpMgJ8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:3000"
+		}
+	]
+}
