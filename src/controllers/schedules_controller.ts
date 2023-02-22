@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Express, RequestHandler } from "express";
+import { RequestHandler } from "express";
 import { RequestWithJWTBody } from "../dto/jwt";
 import { controller } from "../lib/controller";
 
@@ -20,7 +20,7 @@ type CreateScheduleBody = {
 }
 
 
-const createSchedule = (client: PrismaClient): RequestHandler =>        //CURRENTLY NOT WORKING**************
+const createSchedule = (client: PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
         if (!userId) {
@@ -35,32 +35,31 @@ const createSchedule = (client: PrismaClient): RequestHandler =>        //CURREN
         })
         if (reptile && reptile.userId && userId == reptile.userId){
 
-        const { type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as CreateScheduleBody;
-        const schedule = await client.schedule.create({
-            data: {
-                reptileId,
-                userId,
-                type,
-                description,
-                monday,
-                tuesday,
-                wednesday,
-                thursday,
-                friday,
-                saturday,
-                sunday
-            },
-        });
-
-        res.json({ schedule })
-    } else{
-        res.status(401).json({ message: "Unauthorized" });
-        return;
+            const { type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as CreateScheduleBody;
+            const schedule = await client.schedule.create({
+                data: {
+                    reptileId,
+                    userId,
+                    type,
+                    description,
+                    monday,
+                    tuesday,
+                    wednesday,
+                    thursday,
+                    friday,
+                    saturday,
+                    sunday
+                },
+            });
+            res.json({ schedule })
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
     }
-    }
 
 
-const listSchedulesForUser = (client: PrismaClient): RequestHandler =>         //CURRENTLY NOT WORKING**************
+const listSchedulesForUser = (client: PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
         if (!userId) {
@@ -76,7 +75,7 @@ const listSchedulesForUser = (client: PrismaClient): RequestHandler =>         /
     }
 
 
-const listSchedulesForReptile = (client: PrismaClient): RequestHandler =>         //CURRENTLY NOT WORKING**************
+const listSchedulesForReptile = (client: PrismaClient): RequestHandler =>
 async (req: RequestWithJWTBody, res) => {
     const userId = req.jwtBody?.userId;
     if (!userId) {
@@ -102,8 +101,6 @@ async (req: RequestWithJWTBody, res) => {
     }
 
 }
-
-
 
 
 
