@@ -1,12 +1,12 @@
 import express, { RequestHandler } from "express";
 import { PrismaClient, User } from "@prisma/client";
-import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import dotenv, {config} from "dotenv";
-import jwt from "jsonwebtoken";
-import { JWTBody, RequestWithJWTBody } from "./dto/jwt";
 import { usersController } from "./controllers/users_controller";
 import { reptilesController } from "./controllers/reptiles_controller";
+import { feedingsController } from "./controllers/feedings_controller";
+import { schedulesController } from "./controllers/schedules_controller";
+import { husbandryController } from "./controllers/husbandry_controller";
 
 config({path: '.env'})
 dotenv.config();
@@ -17,10 +17,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-//All paths involving user will eventually be here in usersController
 usersController(app, client);
-
 reptilesController(app, client);
+feedingsController(app, client);
+schedulesController(app, client);
+husbandryController(app, client);
 
 
 app.listen(parseInt(process.env.PORT || "3000", 10), () => {
