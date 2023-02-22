@@ -60,4 +60,4 @@ CREATE TABLE "Schedule" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+-- CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
