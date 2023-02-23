@@ -14,14 +14,19 @@ type CreateHusbandryBody = {
 }
 
 
-const createHusbandry = (client: PrismaClient): RequestHandler =>  //CURRENTLY NOT WORKING**************
+const createHusbandry = (client: PrismaClient): RequestHandler =>  
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
+        
         if (!userId) {
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        const {reptileId, length, weight, temperature, humidity} = req.body as CreateHusbandryBody;
+        console.log("husbandry activated");
+        req.body.length
+        const {length, weight, temperature, humidity} = req.body as CreateHusbandryBody;
+        const reptileId = parseInt(req.params.id);
+
         const husbandry = await client.husbandryRecord.create({
             data: {
                 reptileId,
@@ -52,9 +57,6 @@ const listHusbandries = (client: PrismaClient): RequestHandler =>  //CURRENTLY N
 
         // res.json({ husbandry });
     }
-
-
-
 
 
 

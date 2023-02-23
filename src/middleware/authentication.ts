@@ -8,6 +8,7 @@ export const authenticationMiddleware: RequestHandler = async (req: RequestWithJ
     try {
         const jwtBody = jwt.verify(token || '', process.env.ENCRYPTION_KEY!!) as JWTBody;
         req.jwtBody = jwtBody;
+        console.log("token is valid");
     } catch (error) {
         console.log("token failed validation");
     } finally {

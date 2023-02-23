@@ -20,9 +20,6 @@ type UpdateReptileBody = {
 }
 
 
-
-
-
 const createReptile = (client: PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
@@ -81,8 +78,6 @@ const deleteReptile = (client:PrismaClient): RequestHandler =>
 
 
 
-
-
 const updateReptile = (client:PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
@@ -121,3 +116,4 @@ export const reptilesController = controller(
         { path: "/:id", endpointBuilder: updateReptile, method: "put"},
     ]
 )
+
