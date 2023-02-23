@@ -23,7 +23,6 @@ const createHusbandry = (client: PrismaClient): RequestHandler =>
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        console.log("husbandry activated");
 
         const length =  parseInt(req.body.length);
         const weight = parseInt(req.body.weight);
@@ -67,16 +66,24 @@ const listHusbandries = (client: PrismaClient): RequestHandler =>
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-
-        // const husbandry = await client.husbandryRecord.findMany({
-        //     where: {
-        //         reptileId: reptileId
-        //     }
-        // });
-
-        // res.json({ husbandry });
-    }
-
+        const reptileId = parseInt(req.params.id);
+        const reptile = await client.reptile.findFirst({
+            where: {
+                id: reptileId
+            }
+        })
+        if (reptile && reptile.userId && userId == reptile.userId){
+            const husbandries = await client.husbandryRecord.findMany({
+                where: {
+                    reptileId
+                }
+            })
+            res.json({husbandries});
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+}
 
 
 export const husbandryController = controller(
