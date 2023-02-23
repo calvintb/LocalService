@@ -1,5 +1,5 @@
 import express, { RequestHandler } from "express";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import cookieParser from "cookie-parser";
 import dotenv, {config} from "dotenv";
 import { usersController } from "./controllers/users_controller";

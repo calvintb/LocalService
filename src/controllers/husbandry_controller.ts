@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Express, RequestHandler } from "express";
+import { RequestHandler } from "express";
 import { RequestWithJWTBody } from "../dto/jwt";
 import { controller } from "../lib/controller";
 
@@ -23,7 +23,7 @@ const createHusbandry = (client: PrismaClient): RequestHandler =>
             return;
         }
         console.log("husbandry activated");
-        req.body.length
+        
         const {length, weight, temperature, humidity} = req.body as CreateHusbandryBody;
         const reptileId = parseInt(req.params.id);
 
@@ -41,7 +41,7 @@ const createHusbandry = (client: PrismaClient): RequestHandler =>
     }
 
 
-const listHusbandries = (client: PrismaClient): RequestHandler =>  //CURRENTLY NOT WORKING**************
+const listHusbandries = (client: PrismaClient): RequestHandler =>
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
         if (!userId) {

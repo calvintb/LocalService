@@ -1,10 +1,10 @@
-# USU 4610 Simple Server
-This project serves as a starting point for full-stack applications.
+# USU 4610 Reptile Husbandry
+This project serves as a backend to a reptile husbandry project.
 
 ## Get Started
 ### Clone the repo
 ```bash
-git clone git@github.com:dittonjs/usu-4610-simple-server.git
+git clone git@github.com:calvintb/Reptile-Husbandry.git
 ```
 Once cloned you can delete the `.git` folder and reinitialize with your own repo
 

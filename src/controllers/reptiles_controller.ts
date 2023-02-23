@@ -1,8 +1,7 @@
-import { Feeding, HusbandryRecord, PrismaClient, User } from "@prisma/client";
-import { Express, RequestHandler } from "express";
+import { PrismaClient } from "@prisma/client";
+import { RequestHandler } from "express";
 import { RequestWithJWTBody } from "../dto/jwt";
 import { controller } from "../lib/controller";
-import { usersController } from "./users_controller";
 
 type CreateReptileBody = {
     id: number,
@@ -12,12 +11,12 @@ type CreateReptileBody = {
     sex: string,
 }
 
-
 type UpdateReptileBody = {
     sex: string,
     name: string,
     species: string
 }
+
 
 
 const createReptile = (client: PrismaClient): RequestHandler =>
@@ -64,17 +63,27 @@ const deleteReptile = (client:PrismaClient): RequestHandler =>
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-
-        //TO DO-->> WE need to check if the reptile belongs to the user --> ANDE WE NEED TO IMPLEMENT THIS ON ALL METHODS
-
         const id = parseInt(req.params.id)
-        await client.reptile.delete({
-            where:{
+        const reptile = await client.reptile.findFirst({
+            where: {
                 id
             }
         })
-        res.json({message: "deleted"});
+        if (reptile && reptile.userId && userId == reptile.userId){
+            await client.reptile.delete({
+                where: {
+                    id
+                },
+            })
+            res.json({message: "deleted"});
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
     }
+
+
+
 
 
 
@@ -85,21 +94,31 @@ const updateReptile = (client:PrismaClient): RequestHandler =>
             res.status(401).json({ message: "Unauthorized" });
             return;
         } 
-
-        const id = parseInt(req.params.id)
+        const reptileId = parseInt(req.params.id)
         const {sex, name, species} = req.body as UpdateReptileBody;
-        const updatedReptile = await client.reptile.update({
-            where: {
-                id,
-            },
-            data: {
-                name,
-                sex,
-                species
-            },
-        });
 
-        res.json({ updatedReptile});
+        const reptile = await client.reptile.findFirst({
+            where: {
+                id: reptileId,
+            }
+        })
+
+        if (reptile && reptile.userId && userId == reptile.userId){
+            const updatedReptile = await client.reptile.update({
+                where: {
+                    id: reptileId
+                },
+                data: {
+                    name,
+                    sex,
+                    species
+                },
+            });
+            res.json({ updatedReptile })
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
     }
 
 
