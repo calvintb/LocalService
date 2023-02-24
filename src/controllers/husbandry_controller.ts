@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { RequestHandler } from "express";
+import { isNumberObject } from "util/types";
 import { RequestWithJWTBody } from "../dto/jwt";
 import { controller } from "../lib/controller";
 
@@ -14,25 +15,47 @@ type CreateHusbandryBody = {
 }
 
 
-const createHusbandry = (client: PrismaClient): RequestHandler =>
+const createHusbandry = (client: PrismaClient): RequestHandler =>  
     async (req: RequestWithJWTBody, res) => {
         const userId = req.jwtBody?.userId;
+        
         if (!userId) {
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        const {reptileId, length, weight, temperature, humidity} = req.body as CreateHusbandryBody;
-        const husbandry = await client.husbandryRecord.create({
-            data: {
-                reptileId,
-                length,
-                weight,
-                temperature,
-                humidity
-            },
+
+        const length =  parseInt(req.body.length);
+        const weight = parseInt(req.body.weight);
+        const temperature = parseInt(req.body.temperature);
+        const humidity = parseInt(req.body.humidity);
+
+        // const {length, weight, temperature, humidity} = req.body as CreateHusbandryBody;
+
+        const reptileId = parseInt(req.params.id);
+
+        const reptile = await client.reptile.findFirst({
+            where: {
+                id: reptileId
+            }
         });
 
-        res.json({ husbandry });
+        if (reptile && reptile.userId && userId == reptile.userId){
+
+            const husbandry = await client.husbandryRecord.create({
+                data: {
+                    reptileId,
+                    length,
+                    weight,
+                    temperature,
+                    humidity
+                },
+            });
+
+            res.json({ husbandry });
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
     }
 
 
@@ -43,19 +66,24 @@ const listHusbandries = (client: PrismaClient): RequestHandler =>
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-
-        // const husbandry = await client.husbandryRecord.findMany({
-        //     where: {
-        //         reptileId: reptileId
-        //     }
-        // });
-
-        // res.json({ husbandry });
-    }
-
-
-
-
+        const reptileId = parseInt(req.params.id);
+        const reptile = await client.reptile.findFirst({
+            where: {
+                id: reptileId
+            }
+        })
+        if (reptile && reptile.userId && userId == reptile.userId){
+            const husbandries = await client.husbandryRecord.findMany({
+                where: {
+                    reptileId
+                }
+            })
+            res.json({husbandries});
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+}
 
 
 export const husbandryController = controller(
