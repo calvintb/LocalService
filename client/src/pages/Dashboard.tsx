@@ -10,15 +10,16 @@ interface Reptile {
 }
 interface Schedule {
     id: number;
-    type:string,
-    description:string,
-    "monday":boolean,
-    "tuesday":boolean,
-    "wednesday":boolean,
-    "thursday":boolean,
-    "friday":boolean,
-    "saturday":boolean,
-    "sunday":boolean
+    type:string;
+    description:string;
+    monday:boolean;
+    tuesday:boolean;
+    wednesday:boolean;
+    thursday:boolean;
+    friday:boolean;
+    saturday:boolean;
+    sunday:boolean;
+    reptileId: number;
 }
 const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
@@ -99,7 +100,7 @@ export const Dashboard = () => {
             },
             body: JSON.stringify(reptile),
         })
-        .then(() => {getReptiles()}) 
+        .then(() => {getSchedules();getReptiles();}) 
     }
 
     useEffect(()=>{
@@ -126,7 +127,7 @@ export const Dashboard = () => {
             schedules.map((schedule: Schedule) => (
               <div key={schedule.id} className='schedule-item'>
                 <h2>
-                    {schedule.type} | {schedule.description} 
+                    Reptile: {(reptiles.filter((rept:Reptile)=>rept.id == schedule.reptileId)[0] as Reptile).name } | Type: {schedule.type} | Description: {schedule.description} 
                 </h2>
               </div>
             ))
