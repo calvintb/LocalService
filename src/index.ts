@@ -7,6 +7,7 @@ import { reptilesController } from "./controllers/reptiles_controller";
 import { feedingsController } from "./controllers/feedings_controller";
 import { schedulesController } from "./controllers/schedules_controller";
 import { husbandryController } from "./controllers/husbandry_controller";
+import cors from 'cors';
 
 config({path: '.env'})
 dotenv.config();
@@ -15,6 +16,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 
 usersController(app, client);

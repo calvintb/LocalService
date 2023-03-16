@@ -1,13 +1,29 @@
-import { useState } from 'react'
+
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
-import './App.css'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Home } from './pages/Home'
+import { SignUp } from './pages/SignUp'
+import { Dashboard } from './pages/Dashboard'
+import { Reptile } from './pages/Reptile'
+
+const router = createBrowserRouter([{
+  path: "/",
+  element: <Home />
+}, {
+  path: "/signup",
+  element: <SignUp />
+}, {
+  path: "/dashboard",
+  element: <Dashboard />
+}, {
+  path: "/reptiles/:id",
+  element: <Reptile />
+}])
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <Home></Home>
+    <RouterProvider router={router} />
   )
 }
 
