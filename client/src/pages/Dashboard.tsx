@@ -1,6 +1,8 @@
 import React, { useReducer } from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import './Dashboard.css'
+import { useNavigate } from "react-router-dom"
 
 interface Reptile {
     id: number;
@@ -9,6 +11,7 @@ interface Reptile {
     sex: string;
 }
 interface Schedule {
+    [index: string |number]: string | number | boolean,
     id: number;
     type:string;
     description:string;
@@ -21,9 +24,11 @@ interface Schedule {
     sunday:boolean;
     reptileId: number;
 }
+
 const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
 export const Dashboard = () => {
+    const navigate = useNavigate()
     const [schedules, setSchedules] = useState([]);
     const [reptiles, setReptiles] = useState([]);
     const [isCreatingReptile, setCreateReptile] = useState(false);
@@ -32,19 +37,22 @@ export const Dashboard = () => {
     const ReptileCreationForm = () => {        
         return (
         <form><h2>Create your reptile</h2>
-            <input key="name" onChange={(e) => setReptile({...reptile, name:e.target.value})} placeholder='Name' value={reptile.name}></input><br/>
-            <input onChange={(e) => setReptile({...reptile, species:e.target.value})} placeholder='Species' value={reptile.species}></input><br/>
-            <input onChange={(e) => setReptile({...reptile, sex:e.target.value})} placeholder='Sex' value={reptile.sex}></input> <br/>
-            <button type="button" onClick={createReptile}>Create</button>
-            <button type="button" onClick={()=>{setCreateReptile(false)}}>Cancel</button>
-    
+            <div className='reptile-create'>
+                <input key="name" onChange={(e) => setReptile({...reptile, name:e.target.value})} placeholder='Name' value={reptile.name}></input><br/>
+                <input onChange={(e) => setReptile({...reptile, species:e.target.value})} placeholder='Species' value={reptile.species}></input><br/>
+                <input onChange={(e) => setReptile({...reptile, sex:e.target.value})} placeholder='Sex' value={reptile.sex}></input> <br/>
+                <div className='buttons'>
+                    <button type="button" onClick={createReptile}>Create</button>
+                    <button type="button" onClick={()=>{setCreateReptile(false)}}>Cancel</button>
+                </div>
+            </div>
         </form>
         );
     }
 
     const CreateButtons = () => {
         return (
-        <div>
+        <div >
             <button onClick={() => {setCreateReptile(true)}}>Add a new reptile</button>
         </div>
         );
@@ -74,7 +82,7 @@ export const Dashboard = () => {
         if (resultBody.schedules){
             const date = new Date();
             const day = days[date.getDay()];
-            setSchedules(resultBody.schedules.filter((sched: any)=>{return true == sched[day];}));
+            setSchedules(resultBody.schedules.filter((sched: Schedule)=>{return true == sched[day];}));
             console.log(resultBody.schedules);
         }
     }   
@@ -104,9 +112,22 @@ export const Dashboard = () => {
     }
 
     useEffect(()=>{
+        /* Check if user is logged in and redirect to home*/
+        if (window.localStorage.getItem("token")) {
+            navigate("/", {
+              replace: true
+            })
+          }
         getReptiles();
         getSchedules();
     }, []);
+
+    const logOut = () => {
+        window.localStorage.removeItem("token");
+        navigate("/", {
+            replace: true
+        })
+    }
     
 
     let body;
@@ -116,7 +137,7 @@ export const Dashboard = () => {
         body = CreateButtons();
     }
     return (
-    <div>
+    <div className='dashboard-page'>
         <h1>
             I am on the dashboard page!
         </h1>
@@ -150,7 +171,7 @@ export const Dashboard = () => {
             { body }
         </div>
         <div>
-            <button>Log Out</button>
+            <button onClick={logOut}>Log Out</button>
         </div>
     </div>
     );
