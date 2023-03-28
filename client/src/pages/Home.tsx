@@ -16,13 +16,25 @@ export const Home = () => {
         }
       }, [])
 
+ 
 
     return (
         <>
+          <div className="home-page">
+          
             <h1> The Handy Dandy Reptile Husbandry</h1>
-            <p> Do you own several reptiles all with their own schedules, unique names, and husbandries??? Well you're in luck! This application is just for you! The Handy Dandy Reptile Husbandry is a reptile mangement tool designed for reptile owners of just three specific snakes :D</p>
-            <Link className="button" to={{pathname: `/login`}}>Login</Link>
-            <Link className="button" to={{pathname: `/signup`}}>SignUp</Link>  
+            <div className="black-container" >
+              <h3>What It's All About:</h3>
+              <p> Do you own several reptiles all with their own schedules, unique names, and husbandries??? Well you're in luck! This application 
+                is just for you! The Handy Dandy Reptile Husbandry is a reptile mangement tool designed for reptile owners of just three specific 
+                snakes :D</p>
+              <Link className="button" to={{pathname: `/login`}}>Login</Link>
+              <Link className="button" to={{pathname: `/signup`}}>SignUp</Link>  
+            </div>
+          </div>
+
+          
+            
         </>
     )
 }
