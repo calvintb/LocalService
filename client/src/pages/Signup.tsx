@@ -7,6 +7,7 @@ interface SignupBody {
     lastName: string,
     email: string,
     password: string,
+    token: string
 }
 
 export const Signup = () => {
@@ -20,7 +21,7 @@ export const Signup = () => {
 
     const createUser = async (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log(JSON.stringify(user));
+        //console.log(JSON.stringify(user));
         console.log(import.meta.env);
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users`, {
             method: "post",
@@ -29,14 +30,22 @@ export const Signup = () => {
             },
             body: JSON.stringify(user),
         })
-        .then(() => {setUser({firstName:"", lastName:"", email:"", password:""})})
-        //.then(() => {window.localStorage.setItem("token", result.body.token});
-        console.log(await result);  
-    
+        const resultBody = await result.json();
+        console.log("result => " + resultBody.token);
+        if (resultBody.token){
+            window.localStorage.setItem("token", resultBody.token);
+        }
+        setUser({firstName:"", lastName:"", email:"", password:""});
+        navigate("/dashboard", {
+            replace: true
+        })
     }
 
     return (
         <div>
+            <div>
+                <h1>Create Reptile Husbandry Account</h1>
+            </div>
             <form>
                 <label>First Name</label>
                 <input value={user.firstName} type='text' onChange={(e) => setUser({...user, firstName: e.target.value})}></input>
