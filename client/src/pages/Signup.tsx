@@ -1,6 +1,7 @@
 import React, { SyntheticEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Link } from 'react-router-dom';
+import "../signup-login.css"
 
 interface SignupBody {
     firstName: string,
@@ -12,17 +13,11 @@ interface SignupBody {
 
 export const Signup = () => {
     const navigate = useNavigate();
-    // const [firstName, setFirstName] = useState("")
-    // const [lastName, setLastName] = useState("")
-    // const [email, setEmail] = useState("")
-    // const [password, setPassword] = useState("")
     const [user, setUser] = useState({firstName:"", lastName:"", email:"", password:""})
-
 
     const createUser = async (e: SyntheticEvent) => {
         e.preventDefault();
-        //console.log(JSON.stringify(user));
-        console.log(import.meta.env);
+        console.log(import.meta);
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users`, {
             method: "post",
             headers: {
