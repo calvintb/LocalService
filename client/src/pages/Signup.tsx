@@ -17,7 +17,6 @@ export const Signup = () => {
 
     const createUser = async (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log(import.meta);
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users`, {
             method: "post",
             headers: {
