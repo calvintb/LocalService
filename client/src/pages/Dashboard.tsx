@@ -113,7 +113,7 @@ export const Dashboard = () => {
 
     useEffect(()=>{
         /* Check if user is logged in and redirect to home*/
-        if (window.localStorage.getItem("token")) {
+        if (!window.localStorage.getItem("token")) {
             navigate("/", {
               replace: true
             })
