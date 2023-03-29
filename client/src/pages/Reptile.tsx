@@ -244,7 +244,7 @@ export const Reptile = () => {
 
             <div>
                 <h1>You can update reptile {useParams().id} below:</h1>
-                <form className='update-reptile-form'>
+                <div className='update-reptile-form'>
                     <h4>Name</h4>
                     <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={useParams().name} />
                     <h4>Species</h4>
@@ -253,23 +253,26 @@ export const Reptile = () => {
                     <input type="text" value={sex} onChange={e => setSex(e.target.value)} placeholder="Reptiles sex here"/>
                     <br />
                     <button onClick={updateReptile}>Update Reptile</button>
-                </form> 
+                </div> 
             </div>
 
 
             <div>
                 <h1>You can create a feeding for reptile {useParams().id} below:</h1>
-                <form>
+                <div>
                     <input type="text" value={foodItem} onChange={e => setFoodItem(e.target.value)} placeholder='Type feeding here'/>
                     <br />
                     <button onClick={createFeeding}>Create a feeding</button>
-                </form>
+                </div>
             </div>
 
 
             <div>
                 <h1>You can create a husbandry record for reptile {useParams().id} below:</h1>
-                <form>
+                <form onSubmit={(e) => {
+                    e.preventDefault()
+                    createHusbandryRecord() 
+                }}>
                     <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder='Type length here'/>
                     <br />
                     <input type="text" value={weight} onChange={e => setWeight(e.target.value)} placeholder='Type weight here'/>
@@ -278,7 +281,7 @@ export const Reptile = () => {
                     <br />
                     <input type="text" value={humidity} onChange={e => setHumidity(e.target.value)} placeholder='Type humidity here'/>
                     <br />
-                    <button onClick={createHusbandryRecord}>Create a husbandry record</button>
+                    <button type='submit' >Create a husbandry record</button>
                 </form>
             </div>
 
