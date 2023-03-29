@@ -28,7 +28,7 @@ interface Schedule {
 const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
 export const Dashboard = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [schedules, setSchedules] = useState([]);
     const [reptiles, setReptiles] = useState([]);
     const [isCreatingReptile, setCreateReptile] = useState(false);
@@ -88,6 +88,7 @@ export const Dashboard = () => {
     }   
 
     const createReptile = async () => {
+        if (reptile.name && reptile.species && reptile.sex){
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/reptiles`, {
             method: "post",
             headers: {
@@ -97,7 +98,7 @@ export const Dashboard = () => {
             body: JSON.stringify(reptile),
         })
         .then(() => {getReptiles(); setReptile({name:"", species:"", sex:""})})
-
+        }
     }
     const deleteReptile = async (reptileId:number) => {
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/reptiles/${reptileId}`, {
