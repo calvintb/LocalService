@@ -2,6 +2,7 @@ import React, { useReducer } from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
+import './Reptile.css'
 
 
 //No error handling atm. Ex: If user types in 3 of the four fields needed to make a husbandry record
@@ -199,80 +200,74 @@ export const Reptile = () => {
     }, []);
 
     return (
-    <div>
-        <h1>I am on the reptile page of reptile {useParams().id} !</h1>
-            <h1>List of all the feedings of reptile {useParams().id}</h1>
-            <div className='feeding-container'>
+    <div className='black shadowed main_stuff-box'>
+        <h1>Reptile {useParams().id} Page</h1>
+            <h2>Feedings</h2>
+            <div className=''>
                 { feedings.map((feeding: Feeding) => (
-                    <div key={feeding.id}className='reptile-item'>
-                        <h2>{feeding.foodItem}</h2>
-                        <br />
+                    <div key={feeding.id}className='red shadowed stuff-box'>
+                        <h4>{feeding.foodItem}</h4>
                     </div>
                 )) }
             </div>
         
-            <h1>This is a list of all of the husbandry records for this reptile</h1>
-            <div className='husbandries-container'>
+            <h2>Husbandry records</h2>
+            <div className=''>
                 { husbandryRecords.map((husbandries: HusbandryRecord) => (
-                    <div key={husbandries.id} className='schedule-item'>
-                        <h2> Length: {husbandries.length}</h2>
-                        <h2> Weight: {husbandries.weight}</h2>
-                        <h2> Temperature: {husbandries.temperature}</h2>
-                        <h2> Humidity: {husbandries.humidity}</h2>
-                        <br />
+                    <div key={husbandries.id} className='green shadowed stuff-box'>
+                        <h4> Length: {husbandries.length}</h4>
+                        <h4> Weight: {husbandries.weight}</h4>
+                        <h4> Temperature: {husbandries.temperature}</h4>
+                        <h4> Humidity: {husbandries.humidity}</h4>
                     </div>
                 )) }
             </div>
 
-            <h1>This is a list of all of the schedules for this reptile.</h1>
-            <div className='schedule-container'>
+            <h2>Schedules</h2>
+            <div className=''>
                 { schedules.map((schedule: Schedule) => (
-                    <div key={schedule.id} className='schedule-item'>
-                        <h2> Activity type: {schedule.type}</h2>
-                        <h2> Description: {schedule.description} </h2>
-                        <h2> Monday: {(schedule.monday).toString()} </h2>
-                        <h2> Tuesday: {(schedule.tuesday).toString()} </h2>
-                        <h2> Wednesday: {(schedule.wednesday).toString()} </h2>
-                        <h2> Thursday: {(schedule.thursday).toString()} </h2>
-                        <h2> Friday: {(schedule.friday).toString()} </h2>
-                        <h2> Saturday: {(schedule.saturday).toString()} </h2>
-                        <h2> Sunday: {(schedule.sunday).toString()} </h2>
+                    <div key={schedule.id} className='purple shadowed stuff-box'>
+                        <h4> Activity type: {schedule.type}</h4>
+                        <h4> Description: {schedule.description} </h4>
+                        <h4> Monday: {(schedule.monday).toString()} </h4>
+                        <h4> Tuesday: {(schedule.tuesday).toString()} </h4>
+                        <h4> Wednesday: {(schedule.wednesday).toString()} </h4>
+                        <h4> Thursday: {(schedule.thursday).toString()} </h4>
+                        <h4> Friday: {(schedule.friday).toString()} </h4>
+                        <h4> Saturday: {(schedule.saturday).toString()} </h4>
+                        <h4> Sunday: {(schedule.sunday).toString()} </h4>
                         <br />
                     </div>
                 )) }
             </div>
 
             <div>
-                <h1>You can update reptile {useParams().id} below:</h1>
-                <div className='update-reptile-form'>
-                    <h4>Name</h4>
-                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={useParams().name} />
-                    <h4>Species</h4>
-                    <input type="text" value={species} onChange={e => setSpecies(e.target.value)} placeholder="Reptiles species here"/>
-                    <h4>Sex</h4>
-                    <input type="text" value={sex} onChange={e => setSex(e.target.value)} placeholder="Reptiles sex here"/>
+                <h2>Update reptile</h2>
+                <form className='update-reptile-form'>
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder='Type new name here'/>
                     <br />
-                    <button onClick={updateReptile}>Update Reptile</button>
-                </div> 
+                    <input type="text" value={species} onChange={e => setSpecies(e.target.value)} placeholder='Type new species here'/>
+                    <br />
+                    <input type="text" value={sex} onChange={e => setSex(e.target.value)} placeholder='Type new sex here'/>
+                    <br />
+                    <button className='button' onClick={updateReptile}>Update Reptile</button>
+                </form> 
             </div>
 
 
             <div>
-                <h1>You can create a feeding for reptile {useParams().id} below:</h1>
-                <div>
+                <h2>Create a new feeding</h2>
+                <form>
                     <input type="text" value={foodItem} onChange={e => setFoodItem(e.target.value)} placeholder='Type feeding here'/>
                     <br />
-                    <button onClick={createFeeding}>Create a feeding</button>
-                </div>
+                    <button className='button' onClick={createFeeding}>Create a feeding</button>
+                </form>
             </div>
 
 
             <div>
-                <h1>You can create a husbandry record for reptile {useParams().id} below:</h1>
-                <form onSubmit={(e) => {
-                    e.preventDefault()
-                    createHusbandryRecord() 
-                }}>
+                <h2>Create a new husbandry record</h2>
+                <form>
                     <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder='Type length here'/>
                     <br />
                     <input type="text" value={weight} onChange={e => setWeight(e.target.value)} placeholder='Type weight here'/>
@@ -281,12 +276,12 @@ export const Reptile = () => {
                     <br />
                     <input type="text" value={humidity} onChange={e => setHumidity(e.target.value)} placeholder='Type humidity here'/>
                     <br />
-                    <button type='submit' >Create a husbandry record</button>
+                    <button className='button' onClick={createHusbandryRecord}>Create a husbandry record</button>
                 </form>
             </div>
 
             <div>
-                <h1>You can create a schedule for reptile {useParams().id} below:</h1>
+                <h2>Create a new schedule</h2>
                 <form>
                     <input type="text" value={type} onChange={e => setType(e.target.value)} placeholder='Type type here'/>
                     <br />
@@ -306,7 +301,7 @@ export const Reptile = () => {
                     <br />Sunday
                     <input type="checkbox" checked={sunday} onChange={e => setSunday(e.target.checked)}/>
                     <br />
-                    <button onClick={createSchedule}>Create a schedule</button>
+                    <button className='button' onClick={createSchedule}>Create a schedule</button>
                 </form>
             </div>
     </div>
