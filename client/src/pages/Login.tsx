@@ -10,6 +10,7 @@ export const Login = () => {
 
     const login = async (e: SyntheticEvent) => {
         e.preventDefault();
+        console.log(import.meta.env.VITE_SERVER_URL)
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
             method: "post",
             headers: {
