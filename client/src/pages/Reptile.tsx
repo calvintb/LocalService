@@ -65,8 +65,6 @@ export const Reptile = () => {
     const [saturday, setSaturday] = useState(false);
     const [sunday, setSunday] = useState(false);
 
-    // const [reptile, setReptile] = useState({name: "", species: "", sex: ""});
-
 
     const getReptiles =  async () => {
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/reptiles`, {
@@ -132,10 +130,7 @@ export const Reptile = () => {
         });
         const resultBody = await result.json();
         if (resultBody.reptile) {
-            // setReptile({name: name, species: species, sex: sex})
             setReptiles([...reptiles, resultBody.reptile])
-
-            //RN DOES NOT RELOAD THE NAME unitl i refresh the page
         }
         getReptiles();
     }
