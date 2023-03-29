@@ -41,7 +41,7 @@ export const Reptile = () => {
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [feedings, setFeedings] = useState<Feeding[]>([]);
     const [husbandryRecords, setHusbandryRecords] = useState<HusbandryRecord[]>([]);
-    const [reptiles, setReptiles] = useState([]);
+    const [reptiles, setReptiles] = useState<Reptile[]>([]);
     const currReptileId = useParams().id;
 
     const [name, setName] = useState("");
@@ -65,7 +65,7 @@ export const Reptile = () => {
     const [saturday, setSaturday] = useState(false);
     const [sunday, setSunday] = useState(false);
 
-    const [reptile, setReptile] = useState({name: "", species: "", sex: ""});
+    // const [reptile, setReptile] = useState({name: "", species: "", sex: ""});
 
 
     const getReptiles =  async () => {
@@ -132,8 +132,12 @@ export const Reptile = () => {
         });
         const resultBody = await result.json();
         if (resultBody.reptile) {
-          setReptile({name: name, species: species, sex: sex})
+            // setReptile({name: name, species: species, sex: sex})
+            setReptiles([...reptiles, resultBody.reptile])
+
+            //RN DOES NOT RELOAD THE NAME unitl i refresh the page
         }
+        getReptiles();
     }
 
     async function createFeeding() {
@@ -214,7 +218,20 @@ export const Reptile = () => {
 
     return (
     <div className='black shadowed main_stuff-box'>
-        <h1>Reptile {useParams().id}'s Page</h1>
+        <div className='purple shadowed stuff-box'>
+            {reptiles
+                .filter((reptile: Reptile) => (reptile.id).toString() === currReptileId)
+                .map((reptile: Reptile) => (
+                    <div key={reptile.id}>
+                    <h1>{reptile.name}</h1>
+                    <h2>Species: {reptile.species}</h2>
+                    <h2>Sex: {reptile.sex}</h2>
+                    </div>
+                ))
+            }
+        </div>
+        
+
             <h2>Feedings</h2>
             <div className=''>
                 { feedings.map((feeding: Feeding) => (
