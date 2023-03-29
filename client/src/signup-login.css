@@ -2,6 +2,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  width: 100%;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -14,6 +15,48 @@
   -webkit-text-size-adjust: 100%;
 }
 
+html, body {
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 50%;
+}
+
+h1 {
+  color: white;
+  text-shadow: 4px 4px black;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+  font-family: Arial;
+}
+
+body {
+  background-image: url("./assets/jungle.jpeg");
+  height: 100%;
+}
+
+input {
+  width: 20%;
+  margin-left: 20px;
+  display: flexbox;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+label{
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 35px;
+  font-weight: bold;
+  text-shadow: 3px 3px black;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+  font-family: Arial;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -21,14 +64,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -47,9 +82,13 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
-  border-color: #646cff;
+  border-color: violet;
+  background-color: blue;
+  color: white;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;

@@ -3,14 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { Link } from 'react-router-dom';
 import "../signup-login.css"
 
-interface SignupBody {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    token: string
-}
-
 export const Signup = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState({firstName:"", lastName:"", email:"", password:""})
@@ -25,7 +17,7 @@ export const Signup = () => {
             body: JSON.stringify(user),
         })
         const resultBody = await result.json();
-        console.log("result => " + resultBody.token);
+        
         if (resultBody.token){
             window.localStorage.setItem("token", resultBody.token);
         }
