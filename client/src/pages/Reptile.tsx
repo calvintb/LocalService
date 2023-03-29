@@ -13,7 +13,7 @@ interface Reptile {
     name: string;
     sex: string;
 }
-interface Schedule {
+type Schedule = {
     id: number;
     type: string,
     description: string,
@@ -25,22 +25,22 @@ interface Schedule {
     "saturday": boolean,
     "sunday": boolean
 }
-interface HusbandryRecord {
+type HusbandryRecord = {
     id: number,
     length: string,
     weight: string,
     temperature: string,
     humidity: string,
 }
-interface Feeding {
+type Feeding = {
     id: number,
     foodItem: string,
 }
 
 export const Reptile = () => {
-    const [schedules, setSchedules] = useState([]);
-    const [feedings, setFeedings] = useState([]);
-    const [husbandryRecords, setHusbandryRecords] = useState([]);
+    const [schedules, setSchedules] = useState<Schedule[]>([]);
+    const [feedings, setFeedings] = useState<Feeding[]>([]);
+    const [husbandryRecords, setHusbandryRecords] = useState<HusbandryRecord[]>([]);
     const [reptiles, setReptiles] = useState([]);
     const currReptileId = useParams().id;
 
@@ -116,7 +116,6 @@ export const Reptile = () => {
         }
     }   
 
-
     async function updateReptile() {
         const body = {
           name,
@@ -135,8 +134,7 @@ export const Reptile = () => {
         if (resultBody.reptile) {
           setReptile({name: name, species: species, sex: sex})
         }
-      }
-
+    }
 
     async function createFeeding() {
         const body = {
@@ -150,9 +148,14 @@ export const Reptile = () => {
           },
           body: JSON.stringify(body)
         });
-      }
 
-      async function createHusbandryRecord() {
+        const resultBody = await result.json();
+        if (resultBody.feeding) {
+          setFeedings([...feedings, resultBody.feeding])
+        }
+    }
+
+    async function createHusbandryRecord() {
         const body = {
           length,
           weight,
@@ -167,9 +170,13 @@ export const Reptile = () => {
           },
           body: JSON.stringify(body)
         });
-      }
+        const resultBody = await result.json();
+        if (resultBody.husbandry){
+            setHusbandryRecords([...husbandryRecords, resultBody.husbandry])
+        }
+    }
 
-      async function createSchedule() {
+    async function createSchedule() {
         const body = {
           type,
           description,
@@ -189,7 +196,13 @@ export const Reptile = () => {
           },
           body: JSON.stringify(body)
         });
-      }
+
+        const resultBody = await result.json()
+        if (resultBody.schedule){
+            setSchedules([...schedules, resultBody.schedule])
+        }
+        
+    }
 
 
     useEffect(()=>{
@@ -201,7 +214,7 @@ export const Reptile = () => {
 
     return (
     <div className='black shadowed main_stuff-box'>
-        <h1>Reptile {useParams().id} Page</h1>
+        <h1>Reptile {useParams().id}'s Page</h1>
             <h2>Feedings</h2>
             <div className=''>
                 { feedings.map((feeding: Feeding) => (
@@ -243,31 +256,46 @@ export const Reptile = () => {
 
             <div>
                 <h2>Update reptile</h2>
-                <form className='update-reptile-form'>
+                <form onSubmit={(e) => {
+                    e.preventDefault()
+                    updateReptile()
+                }} 
+                className='update-reptile-form'
+                >
                     <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder='Type new name here'/>
                     <br />
                     <input type="text" value={species} onChange={e => setSpecies(e.target.value)} placeholder='Type new species here'/>
                     <br />
                     <input type="text" value={sex} onChange={e => setSex(e.target.value)} placeholder='Type new sex here'/>
                     <br />
-                    <button className='button' onClick={updateReptile}>Update Reptile</button>
+                    <button type="submit" className='button'>Update Reptile</button>
                 </form> 
             </div>
 
 
             <div>
                 <h2>Create a new feeding</h2>
-                <form>
+                <form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    createFeeding()
+                }}
+                >
                     <input type="text" value={foodItem} onChange={e => setFoodItem(e.target.value)} placeholder='Type feeding here'/>
                     <br />
-                    <button className='button' onClick={createFeeding}>Create a feeding</button>
+                    <button type="submit" className='button'>Create a feeding</button>
                 </form>
             </div>
 
 
             <div>
                 <h2>Create a new husbandry record</h2>
-                <form>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        createHusbandryRecord()
+                    }}
+                >
                     <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder='Type length here'/>
                     <br />
                     <input type="text" value={weight} onChange={e => setWeight(e.target.value)} placeholder='Type weight here'/>
@@ -276,13 +304,18 @@ export const Reptile = () => {
                     <br />
                     <input type="text" value={humidity} onChange={e => setHumidity(e.target.value)} placeholder='Type humidity here'/>
                     <br />
-                    <button className='button' onClick={createHusbandryRecord}>Create a husbandry record</button>
+                    <button type="submit" className='button'>Create a husbandry record</button>
                 </form>
             </div>
 
             <div>
                 <h2>Create a new schedule</h2>
-                <form>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        createSchedule()
+                    }}
+                >
                     <input type="text" value={type} onChange={e => setType(e.target.value)} placeholder='Type type here'/>
                     <br />
                     <input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder='Type description here'/>
@@ -301,7 +334,7 @@ export const Reptile = () => {
                     <br />Sunday
                     <input type="checkbox" checked={sunday} onChange={e => setSunday(e.target.checked)}/>
                     <br />
-                    <button className='button' onClick={createSchedule}>Create a schedule</button>
+                    <button type="submit" className='button'>Create a schedule</button>
                 </form>
             </div>
     </div>
