@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import './Reptile.css'
 
-
-//No error handling atm. Ex: If user types in 3 of the four fields needed to make a husbandry record
-
-type Reptile = {
+interface Reptile {
     id: number;
     species: string;
     name: string;
@@ -41,7 +38,7 @@ export const Reptile = () => {
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [feedings, setFeedings] = useState<Feeding[]>([]);
     const [husbandryRecords, setHusbandryRecords] = useState<HusbandryRecord[]>([]);
-    const [reptile, setReptile] = useState<Reptile>();
+    const [reptiles, setReptiles] = useState<Reptile[]>([]);
     const currReptileId = useParams().id;
 
     const [name, setName] = useState("");
@@ -66,7 +63,7 @@ export const Reptile = () => {
     const [sunday, setSunday] = useState(false);
 
 
-    const getReptile =  async () => {
+    const getReptiles =  async () => {
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/reptiles`, {
             headers: {
                 Authorization : "Bearer " + window.localStorage.getItem("token"),
@@ -74,14 +71,7 @@ export const Reptile = () => {
         });
         const resultBody = await result.json();
         if (resultBody.reptiles){
-            var curReptile = resultBody.reptiles
-                .filter((reptile: Reptile) => (reptile.id).toString() === currReptileId)[0] as Reptile
-            
-            console.log(curReptile)
-            setReptile(curReptile);
-            setName(curReptile.name)
-            setSpecies(curReptile.species)
-            setSex(curReptile.sex)
+            setReptiles(resultBody.reptiles);
         }
     }
 
@@ -122,7 +112,6 @@ export const Reptile = () => {
     }   
 
     async function updateReptile() {
-        
         const body = {
           name,
           species,
@@ -137,11 +126,10 @@ export const Reptile = () => {
           body: JSON.stringify(body)
         });
         const resultBody = await result.json();
-        if (resultBody.updatedReptile) {
-            setReptile(resultBody.updatedReptile)    
+        if (resultBody.reptile) {
+            setReptiles([...reptiles, resultBody.reptile])
         }
-        console.log(resultBody)
-        
+        getReptiles();
     }
 
     async function createFeeding() {
@@ -214,72 +202,80 @@ export const Reptile = () => {
 
 
     useEffect(()=>{
-        getReptile();
+        getReptiles();
         getFeedings();
         getSchedules();
-        getHusbandryRecords();
+        getHusbandryRecords()
     }, []);
 
     return (
     <div className='black shadowed main_stuff-box'>
         <div className='purple shadowed stuff-box'>
-            {reptile &&
-                <div key={reptile.id}>
+            {reptiles
+                .filter((reptile: Reptile) => (reptile.id).toString() === currReptileId)
+                .map((reptile: Reptile) => (
+                    <div key={reptile.id}>
                     <h1>{reptile.name}</h1>
                     <h2>Species: {reptile.species}</h2>
                     <h2>Sex: {reptile.sex}</h2>
-                </div>
+                    </div>
+                ))
             }
-    
         </div>
         
-
+            <br />
             <h2>Feedings</h2>
-            <div className=''>
+            <div className='feedings'>
                 { feedings.map((feeding: Feeding) => (
-                    <div key={feeding.id}className='red shadowed stuff-box'>
+                    <div key={feeding.id} className='green shadowed stuff-box child'>
                         <h4>{feeding.foodItem}</h4>
                     </div>
                 )) }
             </div>
-        
+            <br />
             <h2>Husbandry records</h2>
             <div className=''>
                 { husbandryRecords.map((husbandries: HusbandryRecord) => (
-                    <div key={husbandries.id} className='green shadowed stuff-box'>
-                        <h4> Length: {husbandries.length}</h4>
-                        <h4> Weight: {husbandries.weight}</h4>
-                        <h4> Temperature: {husbandries.temperature}</h4>
-                        <h4> Humidity: {husbandries.humidity}</h4>
+                    <div key={husbandries.id} className='green shadowed stuff-box husbandry-records'>
+                        <h4> Length: {husbandries.length} </h4>
+                        <h4> Weight: {husbandries.weight} </h4>
+                        <h4> Temperature: {husbandries.temperature} </h4>
+                        <h4> Humidity: {husbandries.humidity} </h4>
                     </div>
                 )) }
             </div>
 
+            <br />
             <h2>Schedules</h2>
             <div className=''>
                 { schedules.map((schedule: Schedule) => (
                     <div key={schedule.id} className='purple shadowed stuff-box'>
-                        <h4> Activity type: {schedule.type}</h4>
-                        <h4> Description: {schedule.description} </h4>
-                        <h4> Monday: {(schedule.monday).toString()} </h4>
-                        <h4> Tuesday: {(schedule.tuesday).toString()} </h4>
-                        <h4> Wednesday: {(schedule.wednesday).toString()} </h4>
-                        <h4> Thursday: {(schedule.thursday).toString()} </h4>
-                        <h4> Friday: {(schedule.friday).toString()} </h4>
-                        <h4> Saturday: {(schedule.saturday).toString()} </h4>
-                        <h4> Sunday: {(schedule.sunday).toString()} </h4>
+                        <h4 className='sched_title'> Activity type: {schedule.type}</h4>
+                        <h4 className='sched_title'> Description: {schedule.description} </h4>
+                        <div className='days'>
+                            <h4> Mon: {(schedule.monday).toString()} </h4>
+                            <h4> Tue: {(schedule.tuesday).toString()} </h4>
+                            <h4> Wed: {(schedule.wednesday).toString()} </h4>
+                            <h4> Thu: {(schedule.thursday).toString()} </h4>
+                            <h4> Fri: {(schedule.friday).toString()} </h4>
+                            <h4> Sat: {(schedule.saturday).toString()} </h4>
+                            <h4> Sun: {(schedule.sunday).toString()} </h4>
+                        </div>
                         <br />
                     </div>
                 )) }
             </div>
 
-            <div>
+            <br />
+            <br />
+            <br />
+            <div className='green stuff-box'>
+                <br />
                 <h2>Update reptile</h2>
                 <form onSubmit={(e) => {
                     e.preventDefault()
                     updateReptile()
-                }} 
-                className='update-reptile-form'
+                }}
                 >
                     <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder='Type new name here'/>
                     <br />
@@ -291,8 +287,8 @@ export const Reptile = () => {
                 </form> 
             </div>
 
-
-            <div>
+            <div className='green stuff-box'>
+                <br />
                 <h2>Create a new feeding</h2>
                 <form
                 onSubmit={(e) => {
@@ -307,7 +303,8 @@ export const Reptile = () => {
             </div>
 
 
-            <div>
+            <div className='green stuff-box'>
+                <br />
                 <h2>Create a new husbandry record</h2>
                 <form
                     onSubmit={(e) => {
@@ -327,7 +324,8 @@ export const Reptile = () => {
                 </form>
             </div>
 
-            <div>
+            <div className='green stuff-box'>
+                <br />
                 <h2>Create a new schedule</h2>
                 <form
                     onSubmit={(e) => {
@@ -338,22 +336,45 @@ export const Reptile = () => {
                     <input type="text" value={type} onChange={e => setType(e.target.value)} placeholder='Type type here'/>
                     <br />
                     <input type="text" value={description} onChange={e => setDescription(e.target.value)} placeholder='Type description here'/>
-                    <br />Monday
-                    <input type="checkbox" checked={monday} onChange={e => setMonday(e.target.checked)}/>
-                    <br />Tuesday
-                    <input type="checkbox" checked={tuesday} onChange={e => setTuesday(e.target.checked)}/>
-                    <br />Wednesday
-                    <input type="checkbox" checked={wednesday} onChange={e => setWednesday(e.target.checked)}/>
-                    <br />Thursday
-                    <input type="checkbox" checked={thursday} onChange={e => setThursday(e.target.checked)}/>
-                    <br />Friday
-                    <input type="checkbox" checked={friday} onChange={e => setFriday(e.target.checked)}/>
-                    <br />Saturday
-                    <input type="checkbox" checked={saturday} onChange={e => setSaturday(e.target.checked)}/>
-                    <br />Sunday
-                    <input type="checkbox" checked={sunday} onChange={e => setSunday(e.target.checked)}/>
-                    <br />
-                    <button type="submit" className='button'>Create a schedule</button>
+                    <div className='days'>
+                        <div>
+                            <br />M
+                            <input type="checkbox" checked={monday} onChange={e => setMonday(e.target.checked)}/>
+                        </div>
+
+                        <div>
+                            <br />T
+                            <input type="checkbox" checked={tuesday} onChange={e => setTuesday(e.target.checked)}/>
+                        </div>
+
+                        <div>
+                            <br />W
+                            <input type="checkbox" checked={wednesday} onChange={e => setWednesday(e.target.checked)}/>
+                        </div>
+
+                        <div>
+                            <br />T
+                            <input type="checkbox" checked={thursday} onChange={e => setThursday(e.target.checked)}/>
+                        </div>
+
+                        <div>
+                            <br />F
+                            <input type="checkbox" checked={friday} onChange={e => setFriday(e.target.checked)}/>
+                        </div>
+
+                        <div>
+                            <br />S
+                            <input type="checkbox" checked={saturday} onChange={e => setSaturday(e.target.checked)}/>
+                        </div>
+    
+                        <div>
+                            <br />S
+                            <input type="checkbox" checked={sunday} onChange={e => setSunday(e.target.checked)}/>
+                            <br />
+                        </div>    
+                    </div>
+                    
+                    <button type="submit" className='button button:hover'>Create a schedule</button>
                 </form>
             </div>
     </div>
