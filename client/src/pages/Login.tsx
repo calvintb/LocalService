@@ -10,23 +10,27 @@ export const Login = () => {
 
     const login = async (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log(import.meta.env.VITE_SERVER_URL)
-        const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-        })
-        const resultBody = await result.json();
-        
-        if (resultBody.token){
-            window.localStorage.setItem("token", resultBody.token);
+        if(user.email && user.password){
+            console.log(import.meta.env.VITE_SERVER_URL)
+            const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            })
+            const resultBody = await result.json();
+            
+            if (resultBody.token){
+                window.localStorage.setItem("token", resultBody.token);
+            }
+            setUser({email:"", password:""});
+            navigate("/dashboard", {
+                replace: true
+            })
+        }else{
+            console.log("invalid inputs");
         }
-        setUser({email:"", password:""});
-        navigate("/dashboard", {
-            replace: true
-        })
     }
 
     return(

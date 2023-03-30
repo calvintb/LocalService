@@ -9,22 +9,26 @@ export const Signup = () => {
 
     const createUser = async (e: SyntheticEvent) => {
         e.preventDefault();
-        const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users`, {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-        })
-        const resultBody = await result.json();
-        
-        if (resultBody.token){
-            window.localStorage.setItem("token", resultBody.token);
+        if(user.password && user.firstName && user.lastName && user.email){
+            const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/users`, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            })
+            const resultBody = await result.json();
+            
+            if (resultBody.token){
+                window.localStorage.setItem("token", resultBody.token);
+            }
+            setUser({firstName:"", lastName:"", email:"", password:""});
+            navigate("/dashboard", {
+                replace: true
+            })
+        }else{
+            console.log("invalid inputs");
         }
-        setUser({firstName:"", lastName:"", email:"", password:""});
-        navigate("/dashboard", {
-            replace: true
-        })
     }
 
     return (
