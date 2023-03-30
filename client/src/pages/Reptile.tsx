@@ -7,7 +7,7 @@ import './Reptile.css'
 
 //No error handling atm. Ex: If user types in 3 of the four fields needed to make a husbandry record
 
-interface Reptile {
+type Reptile = {
     id: number;
     species: string;
     name: string;
@@ -41,7 +41,7 @@ export const Reptile = () => {
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [feedings, setFeedings] = useState<Feeding[]>([]);
     const [husbandryRecords, setHusbandryRecords] = useState<HusbandryRecord[]>([]);
-    const [reptiles, setReptiles] = useState<Reptile[]>([]);
+    const [reptile, setReptile] = useState<Reptile>();
     const currReptileId = useParams().id;
 
     const [name, setName] = useState("");
@@ -66,7 +66,7 @@ export const Reptile = () => {
     const [sunday, setSunday] = useState(false);
 
 
-    const getReptiles =  async () => {
+    const getReptile =  async () => {
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/reptiles`, {
             headers: {
                 Authorization : "Bearer " + window.localStorage.getItem("token"),
@@ -74,7 +74,14 @@ export const Reptile = () => {
         });
         const resultBody = await result.json();
         if (resultBody.reptiles){
-            setReptiles(resultBody.reptiles);
+            var curReptile = resultBody.reptiles
+                .filter((reptile: Reptile) => (reptile.id).toString() === currReptileId)[0] as Reptile
+            
+            console.log(curReptile)
+            setReptile(curReptile);
+            setName(curReptile.name)
+            setSpecies(curReptile.species)
+            setSex(curReptile.sex)
         }
     }
 
@@ -115,6 +122,7 @@ export const Reptile = () => {
     }   
 
     async function updateReptile() {
+        
         const body = {
           name,
           species,
@@ -129,10 +137,11 @@ export const Reptile = () => {
           body: JSON.stringify(body)
         });
         const resultBody = await result.json();
-        if (resultBody.reptile) {
-            setReptiles([...reptiles, resultBody.reptile])
+        if (resultBody.updatedReptile) {
+            setReptile(resultBody.updatedReptile)    
         }
-        getReptiles();
+        console.log(resultBody)
+        
     }
 
     async function createFeeding() {
@@ -205,25 +214,23 @@ export const Reptile = () => {
 
 
     useEffect(()=>{
-        getReptiles();
+        getReptile();
         getFeedings();
         getSchedules();
-        getHusbandryRecords()
+        getHusbandryRecords();
     }, []);
 
     return (
     <div className='black shadowed main_stuff-box'>
         <div className='purple shadowed stuff-box'>
-            {reptiles
-                .filter((reptile: Reptile) => (reptile.id).toString() === currReptileId)
-                .map((reptile: Reptile) => (
-                    <div key={reptile.id}>
+            {reptile &&
+                <div key={reptile.id}>
                     <h1>{reptile.name}</h1>
                     <h2>Species: {reptile.species}</h2>
                     <h2>Sex: {reptile.sex}</h2>
-                    </div>
-                ))
+                </div>
             }
+    
         </div>
         
 
