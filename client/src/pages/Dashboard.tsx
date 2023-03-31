@@ -110,8 +110,10 @@ export const Dashboard = () => {
             },
             body: JSON.stringify(reptile),
         })
-        .then(() => {getSchedules();getReptiles();}) 
+        getSchedules();
+        getReptiles();
     }
+    
 
     useEffect(()=>{
         /* Check if user is logged in and redirect to home*/
@@ -144,12 +146,13 @@ export const Dashboard = () => {
     } else {
         body = CreateButtons();
     }
+    // getReptiles()   
     return (
     <div className='dashboard-page'>
         <Navbar></Navbar>
 
         <h1>
-            I am on the dashboard page!
+            Dashboard
         </h1>
         <div className="user-schedules">
             <h1>Your schedule for the day:</h1>
@@ -158,7 +161,7 @@ export const Dashboard = () => {
             schedules.map((schedule: Schedule) => (
               <div key={schedule.id} className='schedule-item'>
                 <h2>
-                    Reptile: {(reptiles.filter((rept:Reptile)=>rept.id == schedule.reptileId)[0] as Reptile).name } | Type: {schedule.type} | Description: {schedule.description} 
+                    Reptile: {reptiles.length > 0 ? (reptiles.filter((rept:Reptile)=>rept.id == schedule.reptileId)[0] as Reptile).name :<></> } | Type: {schedule.type} | Description: {schedule.description} 
                 </h2>
               </div>
             ))

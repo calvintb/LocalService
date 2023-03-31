@@ -33,6 +33,7 @@ type HusbandryRecord = {
 type Feeding = {
     id: number,
     foodItem: string,
+    createdAt: Date
 }
 
 export const Reptile = () => {
@@ -86,9 +87,13 @@ export const Reptile = () => {
         });
         const resultBody = await result.json();
         if (resultBody.feedings){
+            for (let i = 0; i < resultBody.feedings.length;i++) {
+                resultBody.feedings[i]["createdAt"] = new Date(resultBody.feedings[i].createdAt)
+            }
             setFeedings(resultBody.feedings);
         }
-    }
+        }
+    
     
     const getSchedules = async () => {
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/schedules/${currReptileId}`, {
@@ -115,6 +120,7 @@ export const Reptile = () => {
     }   
 
     async function updateReptile() {
+        if (!name || !species || !sex) return;
         const body = {
           name,
           species,
@@ -133,49 +139,61 @@ export const Reptile = () => {
             setReptiles([...reptiles, resultBody.reptile])
         }
         getReptiles();
+        setName("")
+        setSpecies("")
+        setSex("")
     }
 
     async function createFeeding() {
+        if(!foodItem) return;
         const body = {
-          foodItem
+        foodItem
         }
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/feedings/${currReptileId}`, {
-          method: 'post',
-          headers: {
+        method: 'post',
+        headers: {
             "Authorization": "Bearer " + window.localStorage.getItem("token"),
             "Content-Type": "application/json"
-          },
-          body: JSON.stringify(body)
+        },
+        body: JSON.stringify(body)
         });
 
         const resultBody = await result.json();
         if (resultBody.feeding) {
-          setFeedings([...feedings, resultBody.feeding])
+            resultBody.feeding['createdAt'] = new Date(resultBody.feeding['createdAt']);
+        setFeedings([...feedings, resultBody.feeding])
         }
+        setFoodItem("");
     }
 
     async function createHusbandryRecord() {
+        if(!length || !weight || !temperature || !humidity) return;
         const body = {
-          length,
-          weight,
-          temperature,
-          humidity
+        length,
+        weight,
+        temperature,
+        humidity
         }
         const result = await fetch(`${import.meta.env.VITE_SERVER_URL}/husbandry-records/${currReptileId}`, {
-          method: 'post',
-          headers: {
+        method: 'post',
+        headers: {
             "Authorization": "Bearer " + window.localStorage.getItem("token"),
             "Content-Type": "application/json"
-          },
-          body: JSON.stringify(body)
+        },
+        body: JSON.stringify(body)
         });
         const resultBody = await result.json();
         if (resultBody.husbandry){
             setHusbandryRecords([...husbandryRecords, resultBody.husbandry])
         }
+        setLength("");
+        setWeight("");
+        setTemperature("");
+        setHumidity("");
     }
 
     async function createSchedule() {
+        if(!type || !description || !(monday || tuesday || wednesday || thursday || friday || saturday || sunday)) return;
         const body = {
           type,
           description,
@@ -200,7 +218,15 @@ export const Reptile = () => {
         if (resultBody.schedule){
             setSchedules([...schedules, resultBody.schedule])
         }
-        
+        setType("")
+        setDescription("")
+        setMonday(false)
+        setTuesday(false)
+        setWednesday(false)
+        setThursday(false)
+        setFriday(false)
+        setSaturday(false)
+        setSunday(false)
     }
 
 
@@ -254,7 +280,7 @@ export const Reptile = () => {
             <div className='feedings'>
                 { feedings.map((feeding: Feeding) => (
                     <div key={feeding.id} className='green shadowed stuff-box child'>
-                        <h4>{feeding.foodItem}</h4>
+                        <h4>{feeding.foodItem} on {feeding.createdAt.getMonth()}/{feeding.createdAt.getDay()}/{feeding.createdAt.getFullYear()}</h4>
                     </div>
                 )) }
             </div>

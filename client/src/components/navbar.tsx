@@ -13,7 +13,7 @@ export const Navbar = () => {
 
     return (
         <div className="navbar">
-            <button onClick={() => {navigate("/dashboard", {replace: true})}}> HOME </button>
+            <button onClick={() => {navigate("/dashboard", {replace: true})}}> DASHBOARD </button>
             <button onClick={logOut}> LOGOUT </button>
         </div>
     )
