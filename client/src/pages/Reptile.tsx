@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import './Reptile.css'
+import { Navbar } from '../components/navbar';
 
 interface Reptile {
     id: number;
@@ -210,6 +211,7 @@ export const Reptile = () => {
 
     return (
     <div className='black shadowed main_stuff-box'>
+        <Navbar></Navbar>
         <div className='purple shadowed stuff-box'>
             {reptiles
                 .filter((reptile: Reptile) => (reptile.id).toString() === currReptileId)
@@ -377,6 +379,7 @@ export const Reptile = () => {
                     <button type="submit" className='button button:hover'>Create a schedule</button>
                 </form>
             </div>
+            
     </div>
     );
 }
