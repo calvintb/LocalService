@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Dashboard.css'
 import { useNavigate } from "react-router-dom"
+import { Navbar } from '../components/navbar';
 
 interface Reptile {
     id: number;
@@ -122,13 +123,6 @@ export const Dashboard = () => {
         getReptiles();
         getSchedules();
     }, []);
-
-    const logOut = () => {
-        window.localStorage.removeItem("token");
-        navigate("/", {
-            replace: true
-        })
-    }
     
 
     let body;
@@ -139,6 +133,8 @@ export const Dashboard = () => {
     }
     return (
     <div className='dashboard-page'>
+        <Navbar></Navbar>
+
         <h1>
             I am on the dashboard page!
         </h1>
@@ -149,7 +145,7 @@ export const Dashboard = () => {
             schedules.map((schedule: Schedule) => (
               <div key={schedule.id} className='schedule-item'>
                 <h2>
-                    Reptile: {(reptiles.filter((rept:Reptile)=>rept.id == schedule.reptileId)[0] as Reptile).name } | Type: {schedule.type} | Description: {schedule.description} 
+                    Reptile: {schedule.userId } | Type: {schedule.type} | Description: {schedule.description} 
                 </h2>
               </div>
             ))
@@ -161,20 +157,21 @@ export const Dashboard = () => {
             <div className='reptile-container'>
             {
             reptiles.map((reptile: Reptile) => (
-              <div key={reptile.id} className='reptile-item'><h2>
-              <Link to={{pathname: `/reptiles/${reptile.id}`}}>{reptile.name}</Link> {reptile.species} {reptile.sex}
-            </h2>
-                <button onClick={()=>deleteReptile(reptile.id)}>Delete</button>
+              <div key={reptile.id} className='reptile-item'>
+                <h2>{reptile.name} | {reptile.species} ({reptile.sex})</h2>
+                <div className='button-container'>
+                    <Link className='button' to={{pathname: `/reptiles/${reptile.id}`}}>Manage</Link>
+                    <button className='button' onClick={()=>deleteReptile(reptile.id)}>Delete</button>
+                </div>
+    
               </div>
             ))
           }
             </div>
             { body }
         </div>
-        <div>
-            <button onClick={logOut}>Log Out</button>
-        </div>
     </div>
+    
     );
     
 }

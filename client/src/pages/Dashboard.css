@@ -19,6 +19,12 @@
     display:flex;
 }.reptile-item{
     display: flex;
-align-content: center;
-justify-content: space-evenly;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.button-container {
+    flex-direction: row;
+    display: flex;
+    height: fit-content;
 }

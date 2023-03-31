@@ -234,3 +234,15 @@ button:focus-visible {
   padding: 1%;
   margin-bottom: 3%;
 }
+
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  background:khaki;
+}
+
+.navbar .button {
+  display: flex;
+}
+

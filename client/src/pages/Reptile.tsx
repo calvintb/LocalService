@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import './Reptile.css'
+import { Navbar } from '../components/navbar';
 
 
 //No error handling atm. Ex: If user types in 3 of the four fields needed to make a husbandry record
@@ -222,6 +223,7 @@ export const Reptile = () => {
 
     return (
     <div className='black shadowed main_stuff-box'>
+        <Navbar></Navbar>
         <div className='purple shadowed stuff-box'>
             {reptile &&
                 <div key={reptile.id}>
@@ -356,6 +358,7 @@ export const Reptile = () => {
                     <button type="submit" className='button'>Create a schedule</button>
                 </form>
             </div>
+            
     </div>
     );
 }
