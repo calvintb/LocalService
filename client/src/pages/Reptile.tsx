@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import './Reptile.css'
 import { Navbar } from '../components/navbar';
@@ -36,6 +36,8 @@ type Feeding = {
 }
 
 export const Reptile = () => {
+    const navigate = useNavigate();
+
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [feedings, setFeedings] = useState<Feeding[]>([]);
     const [husbandryRecords, setHusbandryRecords] = useState<HusbandryRecord[]>([]);
@@ -203,6 +205,28 @@ export const Reptile = () => {
 
 
     useEffect(()=>{
+        if (window.localStorage.getItem("token")) {
+            const result = fetch(`${import.meta.env.VITE_SERVER_URL}/users/me`, {
+              method: "get",
+              headers: {
+                  Authorization : "Bearer " + window.localStorage.getItem("token"),
+                  "Content-Type": "application/json",
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                  navigate("/", {
+                    replace: true
+                  })
+                }
+            })
+        }else {
+            navigate("/", {
+                replace: true
+              })
+        }
+
         getReptiles();
         getFeedings();
         getSchedules();

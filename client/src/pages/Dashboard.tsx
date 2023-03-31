@@ -115,11 +115,24 @@ export const Dashboard = () => {
 
     useEffect(()=>{
         /* Check if user is logged in and redirect to home*/
-        if (!window.localStorage.getItem("token")) {
-            navigate("/", {
-              replace: true
+        if (window.localStorage.getItem("token")) {
+            const result = fetch(`${import.meta.env.VITE_SERVER_URL}/users/me`, {
+              method: "get",
+              headers: {
+                  Authorization : "Bearer " + window.localStorage.getItem("token"),
+                  "Content-Type": "application/json",
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                  navigate("/", {
+                    replace: true
+                  })
+                }
             })
           }
+
         getReptiles();
         getSchedules();
     }, []);
