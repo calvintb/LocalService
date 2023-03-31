@@ -145,7 +145,7 @@ export const Dashboard = () => {
             schedules.map((schedule: Schedule) => (
               <div key={schedule.id} className='schedule-item'>
                 <h2>
-                    Reptile: {schedule.userId } | Type: {schedule.type} | Description: {schedule.description} 
+                    Reptile: {(reptiles.filter((rept:Reptile)=>rept.id == schedule.reptileId)[0] as Reptile).name } | Type: {schedule.type} | Description: {schedule.description} 
                 </h2>
               </div>
             ))
